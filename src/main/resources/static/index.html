@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise</title>
+
+<style>
+html, body {
+    margin: 0;
+    height: 100%;
+    font-family: Arial;
+    background: linear-gradient(135deg, #ff4e7a, #ff8fa3);
+    overflow: hidden;
+}
+
+/* Teddy */
+.teddy {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    z-index: 10;
+}
+
+/* Screens */
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 120px;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.active {
+    opacity: 1;
+}
+
+/* Box */
+.center-box {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    width: 380px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Cake */
+.cake {
+    font-size: 70px;
+}
+
+/* Glow */
+.glow {
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px #fff, 0 0 20px orange; }
+    to { text-shadow: 0 0 20px #fff, 0 0 40px red; }
+}
+
+/* Buttons */
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    background: #ff4e7a;
+    color: white;
+    font-weight: bold;
+}
+
+/* Floating */
+.float-item {
+    position: absolute;
+    bottom: -40px;
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    from { transform: translateY(0); }
+    to { transform: translateY(-900px); }
+}
+</style>
+
+</head>
+
+<body>
+
+<img src="teddy.png" class="teddy">
+
+<!-- INTRO -->
+
+<div id="intro" class="screen active">
+    <div class="center-box">
+        <h2 id="typeText"></h2>
+    </div>
+</div>
+
+<!-- BIRTHDAY -->
+
+<div id="screen1" class="screen">
+    <div class="center-box">
+        <h2>🎈 Happy Birthday 🎈</h2>
+    </div>
+</div>
+
+<!-- CAKE -->
+
+<div id="cakeScreen" class="screen">
+    <div class="center-box">
+        <div id="cake" class="cake">🎂</div>
+        <h3 id="cakeText">Let’s celebrate 🎉</h3>
+    </div>
+</div>
+
+<!-- FINAL -->
+
+<div id="finalScreen" class="screen">
+    <div class="center-box">
+
+```
+    <p id="finalText"></p>
+
+    <h3 id="friendText" style="display:none;">Let’s be friends?</h3>
+
+    <button id="yesBtn" onclick="sendResponse('YES')" style="display:none;">YES 💖</button>
+    <button id="noBtn" onclick="sendResponse('NO')" style="display:none;">NO 🙂</button>
+
+    <!-- QUESTION FEATURE -->
+    <div id="askSection" style="display:none; margin-top:15px;">
+        <h3>Ask me anything 💬</h3>
+
+        <input type="text" id="questionInput"
+               placeholder="Type your question..."
+               style="width:80%; padding:8px; border-radius:10px; border:1px solid #ccc;">
+
+        <br><br>
+
+        <button onclick="sendQuestion()">Submit</button>
+    </div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+/* INTRO TYPEWRITER */
+const introLines = [
+    "Hey... 👀",
+    "The wait is over...",
+    "It's time to celebrate 🎉",
+    "Happy Birthday Srujana"
+];
+
+let iLine = 0;
+let iChar = 0;
+
+function typeEffect() {
+    if (iLine < introLines.length) {
+        let line = introLines[iLine];
+
+        if (iChar < line.length) {
+            document.getElementById("typeText").innerHTML += line.charAt(iChar);
+            iChar++;
+            setTimeout(typeEffect, 50);
+        } else {
+            iLine++;
+            iChar = 0;
+            document.getElementById("typeText").innerHTML += "<br>";
+            setTimeout(typeEffect, 800);
+        }
+    } else {
+        setTimeout(startFlow, 1000);
+    }
+}
+
+/* FLOW */
+function startFlow() {
+    document.getElementById("intro").classList.remove("active");
+    document.getElementById("screen1").classList.add("active");
+
+    setTimeout(startCakeSequence, 2000);
+}
+
+/* CAKE SEQUENCE */
+function startCakeSequence() {
+    document.getElementById("screen1").classList.remove("active");
+    document.getElementById("cakeScreen").classList.add("active");
+
+    const cake = document.getElementById("cake");
+    const text = document.getElementById("cakeText");
+
+    cake.innerText = "🎂";
+
+    setTimeout(() => {
+        cake.innerText = "🎂🕯️";
+        cake.classList.add("glow");
+        text.innerText = "Make a wish ✨";
+    }, 2000);
+
+    setTimeout(() => {
+        cake.classList.remove("glow");
+        cake.innerText = "🎂";
+        text.innerText = "Wish made 🎉";
+    }, 4000);
+
+    setTimeout(() => {
+        cake.innerText = "🍰";
+        text.innerText = "Cake cut 🎉";
+    }, 6000);
+
+    setTimeout(() => {
+        document.getElementById("cakeScreen").classList.remove("active");
+        document.getElementById("finalScreen").classList.add("active");
+        setTimeout(finalTypeEffect, 500);
+    }, 8000);
+}
+
+/* FINAL TEXT */
+const finalLines = [
+    "I just wanted to make your day a little special…",
+    "Hope this made you smile 😊",
+    "once again Happy Birthday Srujana🎉"
+];
+
+let fLine = 0;
+let fChar = 0;
+
+function finalTypeEffect() {
+    if (fLine < finalLines.length) {
+        let line = finalLines[fLine];
+
+        if (fChar < line.length) {
+            document.getElementById("finalText").innerHTML += line.charAt(fChar);
+            fChar++;
+            setTimeout(finalTypeEffect, 40);
+        } else {
+            fLine++;
+            fChar = 0;
+            document.getElementById("finalText").innerHTML += "<br><br>";
+            setTimeout(finalTypeEffect, 600);
+        }
+    } else {
+        document.getElementById("friendText").style.display = "block";
+        document.getElementById("yesBtn").style.display = "inline-block";
+        document.getElementById("noBtn").style.display = "inline-block";
+    }
+}
+
+/* FLOATING ITEMS */
+function createFloatingItem() {
+    const el = document.createElement("div");
+    el.className = "float-item";
+
+    const items = ["🎈","🌸","❤️"];
+    el.innerText = items[Math.floor(Math.random()*items.length)];
+
+    el.style.left = Math.random()*window.innerWidth+"px";
+    el.style.fontSize = "25px";
+    el.style.animationDuration = "7s";
+
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),7000);
+}
+setInterval(createFloatingItem,600);
+
+/* RESPONSE + QUESTION */
+let userResponse = "";
+
+function sendResponse(res) {
+
+    userResponse = res;
+
+    fetch("/api/save-response", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ response: res })
+    })
+    .then(() => {
+        document.getElementById("friendText").innerText = "Tell me something 😊";
+
+        document.getElementById("yesBtn").style.display = "none";
+        document.getElementById("noBtn").style.display = "none";
+
+        document.getElementById("askSection").style.display = "block";
+    });
+}
+
+function sendQuestion() {
+
+    let question = document.getElementById("questionInput").value;
+
+    if (!question) {
+        alert("Please type something");
+        return;
+    }
+
+   fetch("/api/save-question", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            response: userResponse,
+            question: question
+        })
+    })
+    .then(() => {
+        document.getElementById("askSection").innerHTML = "Got it 💖";
+    });
+}
+
+/* START */
+typeEffect();
+
+</script>
+
+</body>
+</html>
